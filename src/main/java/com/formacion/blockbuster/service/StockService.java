@@ -1,20 +1,15 @@
 package com.formacion.blockbuster.service;
 
-import java.util.List;
-
-import com.formacion.blockbuster.dto.Stock;
-import com.formacion.blockbuster.enums.Enums;
+import com.formacion.blockbuster.dto.StockDTO;
 
 public interface StockService {
 	
-	public void addStock(Stock stock);
+	public StockDTO getStock(String reference);
 	
-	public void removeStock(Integer referencia);
+	public void postStock(StockDTO stockDTO, String documentacion, String nombreTienda, String nombreJuego);
 	
-	public void modifyStock(Stock stock, Integer referencia, Enums.estadoJuego estado);
+	public void deleteStock(String reference);
 	
-	public Stock getStock(Integer referencia);
-	
-	public List<Stock> getStocks();
+	public void putStock(StockDTO stockDTO, String reference);
 
 }

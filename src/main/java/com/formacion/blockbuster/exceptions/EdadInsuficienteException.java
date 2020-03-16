@@ -12,7 +12,7 @@ public class EdadInsuficienteException extends RuntimeException{
 
 	@ExceptionHandler(value = EdadInsuficienteException.class)
 	public ResponseEntity<Object> exception(EdadInsuficienteException exception) {
-		return new ResponseEntity<>("No superas la edad exigida por el control PEGI", HttpStatus.NOT_ACCEPTABLE);
+		return new ResponseEntity<>("No tienes edad suficiente para comprar este juego", HttpStatus.NOT_ACCEPTABLE);
 	}
 
 }

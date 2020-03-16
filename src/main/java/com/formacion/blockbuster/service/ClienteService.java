@@ -1,17 +1,16 @@
 package com.formacion.blockbuster.service;
 
-import java.util.List;
-
-import com.formacion.blockbuster.dto.Cliente;
+import com.formacion.blockbuster.dto.ClienteDTO;
+import com.formacion.blockbuster.entity.Cliente;
 
 public interface ClienteService {
 	
-	public void addCliente(Cliente client);
+	public ClienteDTO getCliente(String documentacion);
 	
-	public void removeCliente(String documentacion);
+	public void postCliente(ClienteDTO clienteDTO);
 	
-	public Cliente getCliente(String documentacion);
+	public void deleteCliente(String documentacion);
 	
-	public List<Cliente> getClientes();
+	public void putCliente(ClienteDTO clienteDTO, String documentacion);
 
 }

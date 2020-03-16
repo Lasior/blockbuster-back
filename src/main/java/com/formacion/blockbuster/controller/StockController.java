@@ -9,34 +9,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.formacion.blockbuster.dto.Stock;
-import com.formacion.blockbuster.enums.Enums;
+import com.formacion.blockbuster.dto.StockDTO;
 import com.formacion.blockbuster.service.StockService;
 
 @RestController
 public class StockController {
-
+	
 	@Autowired
 	StockService stockService;
 	
 	@GetMapping("/stock")
-	public Stock getStock(@RequestHeader Integer referencia) {
-		return stockService.getStock(referencia);
+	private StockDTO getStock(@RequestHeader String reference) {
+		return stockService.getStock(reference);
 	}
 	
 	@PostMapping("/stock")
-	public void addStock(@RequestBody Stock stock) {
-		stockService.addStock(stock);
-	}
-	
-	@PutMapping("/stock")
-	public void modifyStock(@RequestBody Stock stock, @RequestHeader Integer referencia, @RequestHeader Enums.estadoJuego estado) {
-		stockService.modifyStock(stock, referencia, estado);
+	private void postStock(@RequestBody StockDTO stockDTO, @RequestHeader String cliente, @RequestHeader String tienda,
+			@RequestHeader String juego) {
+		stockService.postStock(stockDTO, cliente, tienda, juego);
 	}
 	
 	@DeleteMapping("/stock")
-	public void removeStock(@RequestHeader Integer referencia) {
-		stockService.removeStock(referencia);
+	private void deleteStock(@RequestHeader String reference) {
+		stockService.deleteStock(reference);
 	}
 	
+	@PutMapping("/stock")
+	private void putStock(@RequestBody StockDTO stockDTO, @RequestHeader String reference) {
+		stockService.putStock(stockDTO, reference);
+	}
+
 }
