@@ -19,8 +19,7 @@ import com.formacion.blockbuster.entity.Juego;
 import com.formacion.blockbuster.entity.Stock;
 import com.formacion.blockbuster.entity.Tienda;
 import com.formacion.blockbuster.enums.Enums;
-import com.formacion.blockbuster.exceptions.ClienteConStockAlquiladoException;
-import com.formacion.blockbuster.exceptions.EdadInsuficienteException;
+import com.formacion.blockbuster.exceptions.CustomExceptionHandler;
 import com.formacion.blockbuster.repository.ClienteRepository;
 import com.formacion.blockbuster.repository.JuegoRepository;
 import com.formacion.blockbuster.repository.StockRepository;
@@ -78,7 +77,8 @@ public class StockServiceImpl implements StockService {
 
 		for (Stock st : cliente.getStocks()) {
 			if(st.getEstado() == Enums.estadoJuego.ALQUILADO) {
-				throw new ClienteConStockAlquiladoException();
+				throw new CustomExceptionHandler("Ese cliente ya tiene un juego alquilado."
+						+ "No puede haber un cliente con varios juegos alquilados");
 			}
 		}
 		
@@ -94,7 +94,7 @@ public class StockServiceImpl implements StockService {
 		sR.save(stock);
 		}
 		else {
-			throw new EdadInsuficienteException();
+			throw new CustomExceptionHandler("Edad insuficiente para comprar ese juego");
 		}
 	}
 
