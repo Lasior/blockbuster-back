@@ -1,5 +1,7 @@
 package com.formacion.blockbuster.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,22 +27,22 @@ public class ClienteController {
 	ClienteService clienteService;
 	
 	@GetMapping("/cliente")
-	public ClienteDTO getCliente(@RequestHeader String documentacion) {
+	public ClienteDTO getCliente(@Valid @RequestHeader String documentacion) {
 		return clienteService.getCliente(documentacion);
 	}
 	
 	@PostMapping("/cliente")
-	public void postCliente(@RequestBody ClienteDTO clienteDTO) {
+	public void postCliente(@Valid @RequestBody ClienteDTO clienteDTO) {
 		clienteService.postCliente(clienteDTO);
 	}
 	
 	@PutMapping("/cliente")
-	public void putCliente(@RequestBody ClienteDTO clienteDTO, @RequestHeader String documentacion) {
+	public void putCliente(@Valid @RequestBody ClienteDTO clienteDTO, @Valid @RequestHeader String documentacion) {
 		clienteService.putCliente(clienteDTO, documentacion);
 	}
 	
 	@DeleteMapping("/cliente")
-	public void deteleCliente(@RequestHeader String documentacion){
+	public void deteleCliente(@Valid @RequestHeader String documentacion){
 		clienteService.deleteCliente(documentacion);
 	}
 	
