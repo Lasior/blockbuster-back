@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -30,6 +31,12 @@ public class Cliente {
 	@Column(name = "NOMBRE_CLIENTE")
 	private String nombre;
 
+	@Column(name = "CLIENTE_USERNAME")
+	private String username;
+	
+	@Column(name = "CLIENTE_PASSWORD")
+	private String password;
+
 	@Column(name = "DOCUMENTACION_CLIENTE")
 	private String documentacion;
 
@@ -42,5 +49,8 @@ public class Cliente {
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "cliente")
 	private List<Stock> stocks = new ArrayList<>();
+	
+	@ManyToMany
+	private List<Rol> roles = new ArrayList<Rol>();
 
 }

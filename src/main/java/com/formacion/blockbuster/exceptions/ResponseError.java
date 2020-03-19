@@ -1,22 +1,24 @@
 package com.formacion.blockbuster.exceptions;
- 
+
+import lombok.Data;
+
+@Data
 public class ResponseError {
+	private String exception;
 	private String errorMessage;
-	private int statusCode;
- 
-	public String getErrorMessage() {
-		return errorMessage;
+	private String path;
+
+	public ResponseError(Exception exception, String errorMessage, String path) {
+		super();
+		this.exception = exception.getClass().getSimpleName();
+		this.errorMessage = errorMessage;
+		this.path = path;
 	}
- 
-	public void setErrorMessage(String errorMessage) {
+
+	public ResponseError(Exception exception, String errorMessage) {
+		super();
+		this.exception = exception.getClass().getSimpleName();
 		this.errorMessage = errorMessage;
 	}
- 
-	public int getStatusCode() {
-		return statusCode;
-	}
- 
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
-	}
+
 }

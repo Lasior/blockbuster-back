@@ -3,6 +3,8 @@ package com.formacion.blockbuster.service.impl;
 import java.time.LocalDate;
 import java.time.Period;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,8 @@ import com.formacion.blockbuster.entity.Juego;
 import com.formacion.blockbuster.entity.Stock;
 import com.formacion.blockbuster.entity.Tienda;
 import com.formacion.blockbuster.enums.Enums;
-import com.formacion.blockbuster.exceptions.CustomExceptionHandler;
+import com.formacion.blockbuster.exceptions.custom.JuegoBadRequestException;
+import com.formacion.blockbuster.exceptions.custom.StockNoContentException;
 import com.formacion.blockbuster.repository.ClienteRepository;
 import com.formacion.blockbuster.repository.JuegoRepository;
 import com.formacion.blockbuster.repository.StockRepository;
@@ -28,6 +31,8 @@ import com.formacion.blockbuster.service.StockService;
 
 @Service
 public class StockServiceImpl implements StockService {
+
+	Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	EntityToDto etd;
@@ -49,7 +54,10 @@ public class StockServiceImpl implements StockService {
 
 	@Override
 	public StockDTO getStock(String reference) {
-		Stock stock = sR.findByReferencia(reference).get(0);
+		Stock stock = sR.findByReferencia(reference).orElseThrow(() -> {
+			log.error("Ocurrió un error al buscar un Stock.");
+			return new StockNoContentException("No se encontró el stock indicado");
+		}).get(0);
 		StockDTO s = etd.getStockDTO(stock);
 
 		JuegoDTO j = etd.getJuegoDTO(stock.getJuego());
@@ -71,41 +79,53 @@ public class StockServiceImpl implements StockService {
 	@Override
 	public void postStock(StockDTO stockDTO, String documentacion, String nombreTienda, String nombreJuego) {
 		Stock stock = dte.getStock(stockDTO);
-		Cliente cliente = cR.findByDocumentacion(documentacion).get(0);
+		Cliente cliente = cR.findByDocumentacion(documentacion).orElseThrow(() -> {
+			log.error("Ocurrió un error al buscar un Stock.");
+			return new StockNoContentException("No se encontró el stock indicado");
+		}).get(0);
 		Tienda tienda = tR.findByNombre(nombreTienda).get(0);
 		Juego juego = jR.findByTitulo(nombreJuego).get(0);
 
-		for (Stock st : cliente.getStocks()) {
-			if(st.getEstado() == Enums.estadoJuego.ALQUILADO) {
-				throw new CustomExceptionHandler("Ese cliente ya tiene un juego alquilado."
-						+ "No puede haber un cliente con varios juegos alquilados");
+		if (stock.getEstado() == Enums.estadoJuego.ALQUILADO) {
+			for (Stock st : cliente.getStocks()) {
+				if (st.getEstado() == Enums.estadoJuego.ALQUILADO) {
+					log.error("El cliente ya tiene asignado un juego en alquiler.");
+					throw new JuegoBadRequestException("Ese cliente ya tiene un juego alquilado."
+							+ " No puede haber un cliente con varios juegos alquilados");
+				}
 			}
 		}
-		
-		if (juego.getPegi() < Period.between(cliente.getFechaNacimiento(), LocalDate.now()).getYears()) {
-		stock.setCliente(cliente);
-		stock.setJuego(juego);
-		stock.setTienda(tienda);
 
-		cliente.getStocks().add(stock);
-		tienda.getStock().add(stock);
-		juego.getStocks().add(stock);
-		
-		sR.save(stock);
-		}
-		else {
-			throw new CustomExceptionHandler("Edad insuficiente para comprar ese juego");
+		if (juego.getPegi() < Period.between(cliente.getFechaNacimiento(), LocalDate.now()).getYears()) {
+			stock.setCliente(cliente);
+			stock.setJuego(juego);
+			stock.setTienda(tienda);
+
+			cliente.getStocks().add(stock);
+			tienda.getStock().add(stock);
+			juego.getStocks().add(stock);
+
+			sR.save(stock);
+		} else {
+			log.error("La edad del cliente es insuficiente para comprar el juego indicado");
+			throw new JuegoBadRequestException("Edad insuficiente para comprar ese juego");
 		}
 	}
 
 	@Override
 	public void deleteStock(String reference) {
-		sR.delete(sR.findByReferencia(reference).get(0));
+		sR.delete(sR.findByReferencia(reference).orElseThrow(() -> {
+			log.error("Ocurrió un error al buscar un Stock.");
+			return new StockNoContentException("No se encontró el stock indicado");
+		}).get(0));
 	}
 
 	@Override
 	public void putStock(StockDTO stockDTO, String reference) {
-		Stock s = sR.findByReferencia(reference).get(0);
+		Stock s = sR.findByReferencia(reference).orElseThrow(() -> {
+			log.error("Ocurrió un error al buscar un Stock.");
+			return new StockNoContentException("No se encontró el stock indicado");
+		}).get(0);
 		s = dte.getStock(stockDTO);
 		sR.save(s);
 	}

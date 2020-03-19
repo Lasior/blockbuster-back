@@ -11,8 +11,7 @@ public class StockDTO {
 	
 	@NotBlank
 	private String referencia;
-	
-	@NotBlank
+
 	private Enums.estadoJuego estado;
 	
 	private JuegoDTO juegoDTO;

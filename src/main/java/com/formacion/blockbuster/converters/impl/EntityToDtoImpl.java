@@ -6,11 +6,13 @@ import com.formacion.blockbuster.converters.EntityToDto;
 import com.formacion.blockbuster.dto.ClienteDTO;
 import com.formacion.blockbuster.dto.CompanyDTO;
 import com.formacion.blockbuster.dto.JuegoDTO;
+import com.formacion.blockbuster.dto.RolDTO;
 import com.formacion.blockbuster.dto.StockDTO;
 import com.formacion.blockbuster.dto.TiendaDTO;
 import com.formacion.blockbuster.entity.Cliente;
 import com.formacion.blockbuster.entity.Company;
 import com.formacion.blockbuster.entity.Juego;
+import com.formacion.blockbuster.entity.Rol;
 import com.formacion.blockbuster.entity.Stock;
 import com.formacion.blockbuster.entity.Tienda;
 
@@ -71,6 +73,16 @@ public class EntityToDtoImpl implements EntityToDto{
 		s.setReferencia(stock.getReferencia());
 		
 		return s;
+	}
+
+	@Override
+	public RolDTO getRolDTO(Rol rol) {
+		
+		RolDTO r = new RolDTO();
+		
+		r.setRolUsuario(rol.getRol());
+		
+		return r;
 	}
 
 }

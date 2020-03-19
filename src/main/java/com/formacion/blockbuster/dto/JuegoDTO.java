@@ -24,7 +24,6 @@ public class JuegoDTO {
 	@NotBlank
 	private Integer precio, pegi;
 
-	@NotBlank
 	private Enums.categoriaJuego categoria;
 	
 	private List<CompanyDTO> companyDTOs = new ArrayList<>();

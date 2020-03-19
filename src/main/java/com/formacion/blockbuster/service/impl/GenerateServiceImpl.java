@@ -6,8 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.formacion.blockbuster.converters.DtoToEntity;
 import com.formacion.blockbuster.dto.CompanyDTO;
 import com.formacion.blockbuster.dto.JuegoDTO;
+import com.formacion.blockbuster.dto.RolDTO;
 import com.formacion.blockbuster.dto.TiendaDTO;
 import com.formacion.blockbuster.entity.Company;
 import com.formacion.blockbuster.entity.Juego;
@@ -15,6 +17,7 @@ import com.formacion.blockbuster.entity.Stock;
 import com.formacion.blockbuster.entity.Tienda;
 import com.formacion.blockbuster.repository.CompanyRepository;
 import com.formacion.blockbuster.repository.JuegoRepository;
+import com.formacion.blockbuster.repository.RolRepository;
 import com.formacion.blockbuster.repository.TiendaRepository;
 import com.formacion.blockbuster.service.GenerateDataService;
 
@@ -29,6 +32,12 @@ public class GenerateServiceImpl implements GenerateDataService{
 	
 	@Autowired
 	JuegoRepository jR;
+	
+	@Autowired
+	RolRepository rR;
+	
+	@Autowired
+	DtoToEntity dte;
 	
 
 	@Override
@@ -76,6 +85,12 @@ public class GenerateServiceImpl implements GenerateDataService{
 		j.setCompanies(comp);
 		
 		jR.save(j);
+	}
+	
+	@Override
+	public void addRol(RolDTO rolDTO) {
+		System.out.println();
+		rR.save(dte.getRol(rolDTO));
 	}
 
 }

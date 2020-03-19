@@ -1,5 +1,7 @@
 package com.formacion.blockbuster.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.formacion.blockbuster.dto.CompanyDTO;
 import com.formacion.blockbuster.dto.JuegoDTO;
+import com.formacion.blockbuster.dto.RolDTO;
 import com.formacion.blockbuster.dto.TiendaDTO;
 import com.formacion.blockbuster.service.GenerateDataService;
 
@@ -29,6 +32,11 @@ public class GenerateDataController {
 	@PostMapping("/tienda")
 	private void addTienda(@RequestBody TiendaDTO tiendaDTO) {
 		gDS.addTienda(tiendaDTO);
+	}
+	
+	@PostMapping("/rol")
+	private void addRol(@Valid @RequestBody RolDTO rolDTO) {
+		gDS.addRol(rolDTO);
 	}
 	
 }
