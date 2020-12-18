@@ -29,81 +29,81 @@ import com.formacion.blockbuster.service.ClienteService;
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
-	Logger log = LoggerFactory.getLogger(this.getClass());
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	ClienteRepository cR;
+    @Autowired
+    ClienteRepository cR;
 
-	@Autowired
-	RolRepository rR;
+    @Autowired
+    RolRepository rR;
 
-	@Autowired
-	EntityToDto etd;
+    @Autowired
+    EntityToDto etd;
 
-	@Autowired
-	DtoToEntity dte;
+    @Autowired
+    DtoToEntity dte;
 
-	@Override
-	public ClienteDTO getCliente(String documentacion) {
-		Cliente cliente = cR.findByDocumentacion(documentacion).orElseThrow(() -> {
-			log.error("El cliente indicado no se ha encontrado");
-			return new ClienteNoContentException("Cliente no encontrado");
-		}).get(0);
+    @Override
+    public ClienteDTO getCliente(String documentacion) {
+        Cliente cliente = cR.findByDocumentacion(documentacion).orElseThrow(() -> {
+            log.error("El cliente indicado no se ha encontrado");
+            return new ClienteNoContentException("Cliente no encontrado");
+        }).get(0);
 
-		ClienteDTO c = etd.getClienteDTO(cliente);
+        ClienteDTO c = etd.getClienteDTO(cliente);
 
-		List<StockDTO> stocks = new ArrayList<StockDTO>();
+        List<StockDTO> stocks = new ArrayList<StockDTO>();
 
-		for (Stock stock : cliente.getStocks()) {
-			StockDTO s = etd.getStockDTO(stock);
-			JuegoDTO j = etd.getJuegoDTO(stock.getJuego());
-			TiendaDTO t = etd.getTiendaDTO(stock.getTienda());
+        for (Stock stock : cliente.getStocks()) {
+            StockDTO s = etd.getStockDTO(stock);
+            JuegoDTO j = etd.getJuegoDTO(stock.getJuego());
+            TiendaDTO t = etd.getTiendaDTO(stock.getTienda());
 
-			for (Company comp : stock.getJuego().getCompanies()) {
-				CompanyDTO com = etd.getCompanyDTO(comp);
-				j.getCompanyDTOs().add(com);
-			}
+            for (Company comp : stock.getJuego().getCompanies()) {
+                CompanyDTO com = etd.getCompanyDTO(comp);
+                j.getCompanies().add(com);
+            }
 
-			s.setJuegoDTO(j);
-			s.setTiendaDTO(t);
+            s.setJuegoDTO(j);
+            s.setTiendaDTO(t);
 
-			stocks.add(s);
-		}
+            stocks.add(s);
+        }
 
-		c.setStockDTOs(stocks);
+        c.setStockDTOs(stocks);
 
-		return c;
-	}
+        return c;
+    }
 
-	@Override
-	public void postCliente(ClienteDTO clienteDTO, Enums.rolUsuario rolUsuario) {
+    @Override
+    public void postCliente(ClienteDTO clienteDTO, Enums.rolUsuario rolUsuario) {
 
-		Cliente c = dte.getCliente(clienteDTO);
-		Rol r = rR.findByRol(rolUsuario).orElseThrow(() -> {
-			log.error("El rol que se ha indicado no se encuentra en la base de datos");
-			return new RolNoContentException("El rol indicado no se encuentra en la base de datos");
-		}).get(0);
+        Cliente c = dte.getCliente(clienteDTO);
+        Rol r = rR.findByRol(rolUsuario).orElseThrow(() -> {
+            log.error("El rol que se ha indicado no se encuentra en la base de datos");
+            return new RolNoContentException("El rol indicado no se encuentra en la base de datos");
+        }).get(0);
 
-		c.getRoles().add(r);
-		cR.save(c);
-	}
+        c.getRoles().add(r);
+        cR.save(c);
+    }
 
-	@Override
-	public void deleteCliente(String documentacion) {
-		cR.delete(cR.findByDocumentacion(documentacion).orElseThrow(() -> {
-			log.error("El cliente indicado no se ha encontrado");
-			return new ClienteNoContentException("Cliente no encontrado");
-		}).get(0));
-	}
+    @Override
+    public void deleteCliente(String documentacion) {
+        cR.delete(cR.findByDocumentacion(documentacion).orElseThrow(() -> {
+            log.error("El cliente indicado no se ha encontrado");
+            return new ClienteNoContentException("Cliente no encontrado");
+        }).get(0));
+    }
 
-	@Override
-	public void putCliente(ClienteDTO clienteDTO, String documentacion) {
-		Cliente cliente = cR.findByDocumentacion(documentacion).orElseThrow(() -> {
-			log.error("El cliente indicado no se ha encontrado");
-			return new ClienteNoContentException("Cliente no encontrado");
-		}).get(0);
-		cliente = dte.getCliente(clienteDTO);
-		cR.save(cliente);
-	}
+    @Override
+    public void putCliente(ClienteDTO clienteDTO, String documentacion) {
+        Cliente cliente = cR.findByDocumentacion(documentacion).orElseThrow(() -> {
+            log.error("El cliente indicado no se ha encontrado");
+            return new ClienteNoContentException("Cliente no encontrado");
+        }).get(0);
+        cliente = dte.getCliente(clienteDTO);
+        cR.save(cliente);
+    }
 
 }

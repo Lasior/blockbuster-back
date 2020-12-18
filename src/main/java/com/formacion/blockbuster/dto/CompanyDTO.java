@@ -9,10 +9,12 @@ import lombok.Data;
 
 @Data
 public class CompanyDTO {
-	
-	@NotBlank
-	private String cif, nombre;
 
-	private List<JuegoDTO> juegoDTOs = new ArrayList<JuegoDTO>();
+    private Long idCompany;
+
+    @NotBlank
+    private String cif, nombre;
+
+    private List<JuegoDTO> juegos = new ArrayList<JuegoDTO>();
 
 }

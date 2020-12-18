@@ -1,0 +1,1 @@
+Insert into CLIENTE (ID, CLIENTE_USERNAME, CLIENTE_PASSWORD) values (1, 'cristian', '$2y$12$5uEeq2MuOK1Rk2haEjZOU.VwunRZpQTm8drCFtRAH7..kQKHmttfi'); -- Pass: 1234

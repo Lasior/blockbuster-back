@@ -36,9 +36,9 @@ public class UserService implements UserDetailsService {
 		
 		UserDetails user = new User(c.getUsername(), c.getPassword(), roles);
 		
-		for (GrantedAuthority grantedAuthority : getAuthorities(c.getRoles())) {
+		/*for (GrantedAuthority grantedAuthority : getAuthorities(c.getRoles())) {
 			System.out.println(grantedAuthority);
-		}
+		}*/
 
 		return user;
 	}

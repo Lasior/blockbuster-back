@@ -18,19 +18,19 @@ import lombok.Data;
 @Table(name = "COMPANY")
 @Data
 public class Company {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "idCompany")
-	@Column(name = "ID")
-	private Long idCompany;
-	
-	@Column(name = "CIF")
-	private String cif;
-	
-	@Column(name = "COMPANY_NOMBRE")
-	private String nombre;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	private List<Juego> juegos = new ArrayList<Juego>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "idCompany")
+    @Column(name = "ID")
+    private Long idCompany;
+
+    @Column(name = "CIF")
+    private String cif;
+
+    @Column(name = "COMPANY_NOMBRE")
+    private String nombre;
+
+    @ManyToMany(mappedBy = "companies", cascade = CascadeType.ALL)
+    private List<Juego> juegos = new ArrayList<Juego>();
 
 }

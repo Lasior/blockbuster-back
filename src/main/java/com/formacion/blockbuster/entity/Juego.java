@@ -24,31 +24,31 @@ import lombok.Data;
 @Data
 public class Juego {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "idJuego")
-	@Column(name = "ID")
-	private Long idJuego;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long idJuego;
 
-	@Column(name = "JUEGO_TITULO")
-	private String titulo;
+    @Column(name = "JUEGO_TITULO")
+    private String titulo;
 
-	@Column(name = "JUEGO_FECHA_LANZAMIENTO")
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date fechaLanzamiento;
+    @Column(name = "JUEGO_FECHA_LANZAMIENTO")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date fechaLanzamiento;
 
-	@Column(name = "JUEGO_PRECIO")
-	private Integer precio;
-	
-	@Column(name = "JUEGO_PEGI")
-	private Integer pegi;
+    @Column(name = "JUEGO_PRECIO")
+    private Integer precio;
 
-	@Column(name = "JUEGO_CATEGORIA")
-	private Enums.categoriaJuego categoria;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "juego")
-	private List<Stock> stocks = new ArrayList<Stock>();
-	
-	@ManyToMany(mappedBy = "juegos")
-	private List<Company> companies = new ArrayList<Company>();
+    @Column(name = "JUEGO_PEGI")
+    private Integer pegi;
+
+    @Column(name = "JUEGO_CATEGORIA")
+    private Enums.categoriaJuego categoria;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "juego")
+    private List<Stock> stocks = new ArrayList<Stock>();
+
+    @ManyToMany
+    private List<Company> companies = new ArrayList<Company>();
 
 }

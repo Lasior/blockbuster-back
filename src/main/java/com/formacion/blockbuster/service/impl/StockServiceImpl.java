@@ -32,102 +32,102 @@ import com.formacion.blockbuster.service.StockService;
 @Service
 public class StockServiceImpl implements StockService {
 
-	Logger log = LoggerFactory.getLogger(this.getClass());
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	EntityToDto etd;
+    @Autowired
+    EntityToDto etd;
 
-	@Autowired
-	DtoToEntity dte;
+    @Autowired
+    DtoToEntity dte;
 
-	@Autowired
-	StockRepository sR;
+    @Autowired
+    StockRepository sR;
 
-	@Autowired
-	ClienteRepository cR;
+    @Autowired
+    ClienteRepository cR;
 
-	@Autowired
-	TiendaRepository tR;
+    @Autowired
+    TiendaRepository tR;
 
-	@Autowired
-	JuegoRepository jR;
+    @Autowired
+    JuegoRepository jR;
 
-	@Override
-	public StockDTO getStock(String reference) {
-		Stock stock = sR.findByReferencia(reference).orElseThrow(() -> {
-			log.error("Ocurrió un error al buscar un Stock.");
-			return new StockNoContentException("No se encontró el stock indicado");
-		}).get(0);
-		StockDTO s = etd.getStockDTO(stock);
+    @Override
+    public StockDTO getStock(String reference) {
+        Stock stock = sR.findByReferencia(reference).orElseThrow(() -> {
+            log.error("Ocurrió un error al buscar un Stock.");
+            return new StockNoContentException("No se encontró el stock indicado");
+        }).get(0);
+        StockDTO s = etd.getStockDTO(stock);
 
-		JuegoDTO j = etd.getJuegoDTO(stock.getJuego());
-		TiendaDTO t = etd.getTiendaDTO(stock.getTienda());
-		ClienteDTO c = etd.getClienteDTO(stock.getCliente());
+        JuegoDTO j = etd.getJuegoDTO(stock.getJuego());
+        TiendaDTO t = etd.getTiendaDTO(stock.getTienda());
+        ClienteDTO c = etd.getClienteDTO(stock.getCliente());
 
-		for (Company comp : stock.getJuego().getCompanies()) {
-			CompanyDTO com = etd.getCompanyDTO(comp);
-			j.getCompanyDTOs().add(com);
-		}
+        for (Company comp : stock.getJuego().getCompanies()) {
+            CompanyDTO com = etd.getCompanyDTO(comp);
+            j.getCompanies().add(com);
+        }
 
-		s.setClienteDTO(c);
-		s.setJuegoDTO(j);
-		s.setTiendaDTO(t);
+        s.setClienteDTO(c);
+        s.setJuegoDTO(j);
+        s.setTiendaDTO(t);
 
-		return s;
-	}
+        return s;
+    }
 
-	@Override
-	public void postStock(StockDTO stockDTO, String documentacion, String nombreTienda, String nombreJuego) {
-		Stock stock = dte.getStock(stockDTO);
-		Cliente cliente = cR.findByDocumentacion(documentacion).orElseThrow(() -> {
-			log.error("Ocurrió un error al buscar un Stock.");
-			return new StockNoContentException("No se encontró el stock indicado");
-		}).get(0);
-		Tienda tienda = tR.findByNombre(nombreTienda).get(0);
-		Juego juego = jR.findByTitulo(nombreJuego).get(0);
+    @Override
+    public void postStock(StockDTO stockDTO, String documentacion, String nombreTienda, String nombreJuego) {
+        Stock stock = dte.getStock(stockDTO);
+        Cliente cliente = cR.findByDocumentacion(documentacion).orElseThrow(() -> {
+            log.error("Ocurrió un error al buscar un Stock.");
+            return new StockNoContentException("No se encontró el stock indicado");
+        }).get(0);
+        Tienda tienda = tR.findByNombre(nombreTienda).get(0);
+        Juego juego = jR.findByTitulo(nombreJuego).get(0);
 
-		if (stock.getEstado() == Enums.estadoJuego.ALQUILADO) {
-			for (Stock st : cliente.getStocks()) {
-				if (st.getEstado() == Enums.estadoJuego.ALQUILADO) {
-					log.error("El cliente ya tiene asignado un juego en alquiler.");
-					throw new JuegoBadRequestException("Ese cliente ya tiene un juego alquilado."
-							+ " No puede haber un cliente con varios juegos alquilados");
-				}
-			}
-		}
+        if (stock.getEstado() == Enums.estadoJuego.ALQUILADO) {
+            for (Stock st : cliente.getStocks()) {
+                if (st.getEstado() == Enums.estadoJuego.ALQUILADO) {
+                    log.error("El cliente ya tiene asignado un juego en alquiler.");
+                    throw new JuegoBadRequestException(
+                            "Ese cliente ya tiene un juego alquilado." + " No puede haber un cliente con varios juegos alquilados");
+                }
+            }
+        }
 
-		if (juego.getPegi() < Period.between(cliente.getFechaNacimiento(), LocalDate.now()).getYears()) {
-			stock.setCliente(cliente);
-			stock.setJuego(juego);
-			stock.setTienda(tienda);
+        if (juego.getPegi() < Period.between(cliente.getFechaNacimiento(), LocalDate.now()).getYears()) {
+            stock.setCliente(cliente);
+            stock.setJuego(juego);
+            stock.setTienda(tienda);
 
-			cliente.getStocks().add(stock);
-			tienda.getStock().add(stock);
-			juego.getStocks().add(stock);
+            cliente.getStocks().add(stock);
+            tienda.getStock().add(stock);
+            juego.getStocks().add(stock);
 
-			sR.save(stock);
-		} else {
-			log.error("La edad del cliente es insuficiente para comprar el juego indicado");
-			throw new JuegoBadRequestException("Edad insuficiente para comprar ese juego");
-		}
-	}
+            sR.save(stock);
+        } else {
+            log.error("La edad del cliente es insuficiente para comprar el juego indicado");
+            throw new JuegoBadRequestException("Edad insuficiente para comprar ese juego");
+        }
+    }
 
-	@Override
-	public void deleteStock(String reference) {
-		sR.delete(sR.findByReferencia(reference).orElseThrow(() -> {
-			log.error("Ocurrió un error al buscar un Stock.");
-			return new StockNoContentException("No se encontró el stock indicado");
-		}).get(0));
-	}
+    @Override
+    public void deleteStock(String reference) {
+        sR.delete(sR.findByReferencia(reference).orElseThrow(() -> {
+            log.error("Ocurrió un error al buscar un Stock.");
+            return new StockNoContentException("No se encontró el stock indicado");
+        }).get(0));
+    }
 
-	@Override
-	public void putStock(StockDTO stockDTO, String reference) {
-		Stock s = sR.findByReferencia(reference).orElseThrow(() -> {
-			log.error("Ocurrió un error al buscar un Stock.");
-			return new StockNoContentException("No se encontró el stock indicado");
-		}).get(0);
-		s = dte.getStock(stockDTO);
-		sR.save(s);
-	}
+    @Override
+    public void putStock(StockDTO stockDTO, String reference) {
+        Stock s = sR.findByReferencia(reference).orElseThrow(() -> {
+            log.error("Ocurrió un error al buscar un Stock.");
+            return new StockNoContentException("No se encontró el stock indicado");
+        }).get(0);
+        s = dte.getStock(stockDTO);
+        sR.save(s);
+    }
 
 }
